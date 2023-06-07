@@ -21,7 +21,7 @@ class Producto
     private ?int $existencia = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTimeInterface $fecha = null;
+    private ?\DateTime $fecha = null;
 
     #[ORM\Column]
     private ?bool $existe = null;
@@ -55,12 +55,12 @@ class Producto
         return $this;
     }
 
-    public function getFecha(): ?\DateTimeInterface
+    public function getFecha(): String
     {
-        return $this->fecha;
+        return $this->fecha->format('d-m-Y');
     }
 
-    public function setFecha(\DateTimeInterface $fecha): self
+    public function setFecha(\DateTime $fecha): self
     {
         $this->fecha = $fecha;
 

@@ -10,15 +10,32 @@
 
 <div class="example-wrapper">
     <h1>Listado de Productos</h1>
-    <table>        
-        {% for (producto in productos) %}
-        <tr>
-            <td>{{ producto.id }}</td>
-            <td>{{ producto.fecha }}</td>
-            <td>{{ producto.nombre }}</td>
-            <td>{{ producto.existencia }}</td>
-        </tr>
-        {% endfor %}        
+    <p>
+        {{ form(form) }}
+    </p>
+    <table>
+        <thead>
+            <tr>
+                <td><strong>ID</strong></td>
+                <td><strong>FECHA</strong></td>
+                <td><strong>NOMBRE</strong></td>
+                <td><strong>N.EXISTENCIAS</strong></td>
+                <td><strong>Editar</strong></td>
+                <td><strong>Borrar</strong></td>
+            </tr> 
+        </thead>
+        <tbody>      
+            {% for producto in productos %}
+            <tr>
+                <td>{{ producto.id }}</td>
+                <td>{{ producto.fecha }}</td>
+                <td>{{ producto.nombre }}</td>
+                <td>{{ producto.existencia }}</td>
+                <td><strong><a href="{{ path('editar_producto', {'id': producto.id}) }}" />E</a></strong></td>
+                <td><strong><a href="{{ path('borrar_producto', {'id': producto.id}) }}" onclick="return confirm('Estas seguro de borrar el registro número {{ producto.id }}?')" />X</a></strong></td>
+            </tr>
+            {% endfor %}   
+        </tbody>      
     </table>
 </div>
 {% endblock %}
