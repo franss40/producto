@@ -37,7 +37,8 @@ class ProductoController extends AbstractController
             $this->em->flush();
             return $this->redirectToRoute('ver_producto');
         }
-        $productos = $this->em->getRepository(Producto::class)->findAll();
+        //$productos = $this->em->getRepository(Producto::class)->findAll();
+        $productos = $this->em->getRepository(Producto::class)->findBy(['existe' => true]);
         return $this->render('producto/index.html.twig', [
             'productos' => $productos,
             'form' => $form->createView(),
@@ -47,29 +48,36 @@ class ProductoController extends AbstractController
     #[Route('/borrar/{id}', name: 'borrar_producto', methods:['GET'])]
     public function borrar(int $id): Response
     {
+        /* Si quieres borrar completamente el registro
         $producto = $this->em->getRepository(Producto::class)->find($id);
         $this->em->remove($producto);
+        $this->em->flush();*/
+        
+        // Aquí lo borras sólo lógicamente
+        $producto = $this->em->getRepository(Producto::class)->find($id);
+        $producto->setExiste(false);
         $this->em->flush();
-        $productos = $this->em->getRepository(Producto::class)->findAll();
-        return $this->render('producto/index.html.twig', [
-            'productos' => $productos,
-        ]); 
+
+        $form = $this->createForm(AddType::class, $producto);
+
+        return $this->redirectToRoute('ver_producto'); 
     }
 
     #[Route('/editar/{id}', name: 'editar_producto')]
     public function editar(Request $request, int $id, Producto $producto): Response
     {
+        $producto = $this->em->getRepository(Producto::class)->find($id);
+
         $form = $this->createForm(AddType::class, $producto);
         $form->handleRequest($request);
         
         if ($form->isSubmitted() && $form->isValid()) {
-            $producto = $this->em->getRepository(Producto::class)->find($id);
             $numeroExistencias = (int) $producto->getExistencia();
             $producto->setExiste(0);
             if ($numeroExistencias) {
                 $producto->setExiste(1);
             }
-            $this->em->flush();
+            $this->em->flush();          
             return $this->redirectToRoute('ver_producto');
         }
         return $this->render('producto/editar.html.twig', [
