@@ -39,6 +39,7 @@ class ProductoController extends AbstractController
         }
         //$productos = $this->em->getRepository(Producto::class)->findAll();
         $productos = $this->em->getRepository(Producto::class)->findBy(['existe' => true]);
+
         return $this->render('producto/index.html.twig', [
             'productos' => $productos,
             'form' => $form->createView(),
@@ -64,10 +65,15 @@ class ProductoController extends AbstractController
     }
 
     #[Route('/editar/{id}', name: 'editar_producto')]
-    public function editar(Request $request, int $id, Producto $producto): Response
+    public function editar(Request $request, Producto $producto): Response
     {
+        /* 
+        //No hace falta debido a una librería bundle que lo hace automático
         $producto = $this->em->getRepository(Producto::class)->find($id);
-
+        // genera un 404
+        if (!$producto) {
+            throw $this->createNotFoundException('Producto not found');
+        } */
         $form = $this->createForm(AddType::class, $producto);
         $form->handleRequest($request);
         
